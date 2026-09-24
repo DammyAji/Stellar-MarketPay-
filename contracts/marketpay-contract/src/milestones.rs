@@ -103,7 +103,10 @@ fn release_milestone_at(env: &Env, escrow: &mut Escrow, position: u32) -> i128 {
     );
 
     env.events().publish(
-        (Symbol::new(env, "milestone_released"), escrow.job_id.clone()),
+        (
+            Symbol::new(env, "milestone_released"),
+            escrow.job_id.clone(),
+        ),
         (
             escrow.client.clone(),
             escrow.freelancer.clone(),
@@ -155,9 +158,10 @@ fn finalize_if_all_resolved(env: &Env, escrow: &mut Escrow) {
         .get(&DataKey::CompletedJobs(escrow.client.clone()))
         .unwrap_or(0);
     let new_client_jobs = client_jobs.checked_add(1).expect("Counter overflow");
-    env.storage()
-        .instance()
-        .set(&DataKey::CompletedJobs(escrow.client.clone()), &new_client_jobs);
+    env.storage().instance().set(
+        &DataKey::CompletedJobs(escrow.client.clone()),
+        &new_client_jobs,
+    );
 }
 
 #[allow(clippy::too_many_arguments)]
